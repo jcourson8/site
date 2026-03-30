@@ -31,6 +31,9 @@ dist
 # Debug
 npm-debug.log*
 
+# Third-party site snapshots (local analysis only)
+extracted/
+
 # Misc
 .DS_Store
 *.pem

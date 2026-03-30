@@ -1,14 +1,35 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import localFont from "next/font/local"
+import { Inter, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils"
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+})
+
+const gtCanon = localFont({
+  src: [
+    {
+      path: "../public/fonts/gt-canon/GT-Canon-Trial-VF.woff2",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/gt-canon/GT-Canon-Italic-Trial-VF.woff2",
+      style: "italic",
+    },
+  ],
+  variable: "--font-display",
+  display: "swap",
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
 })
 
 export default function RootLayout({
@@ -20,10 +41,17 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "antialiased",
+        inter.variable,
+        gtCanon.variable,
+        fontMono.variable,
+      )}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
