@@ -19,6 +19,9 @@
       }
     }
   },
+  "files": {
+    "maxSize": 2097152
+  },
   "overrides": [
     {
       "includes": ["packages/ui/**"],

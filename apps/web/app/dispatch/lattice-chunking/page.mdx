@@ -1,0 +1,107 @@
+import { ChunkingDemo } from "./components/chunking-demo";
+import { LatticeHeatmap } from "./components/lattice-heatmap";
+import { LatticeVisualizer } from "./components/lattice-visualizer";
+import { Note } from "./components/note";
+import { Tex } from "./components/math";
+import { QueryExample } from "./components/query-example";
+
+export const metadata = {
+  title: "Lattice Chunking",
+  description: "Multi-scale text chunking via overlapping windows.",
+};
+
+# Lattice Chunking
+
+<p className="mt-1 font-mono text-[11px] text-muted-foreground">4/1/2026</p>
+
+Retrieval systems chunk text before indexing. Small chunks match precise
+questions. Large chunks capture broader context. The right size depends
+on the query, and you don't have the query at ingest time.
+
+## The lattice
+
+Don't choose a chunk size. _Index all of them._
+
+Start with semantic units. Sentences, paragraphs, whatever the text
+naturally breaks into. Build overlapping windows: every consecutive
+pair, every triple, every quadruple, up to some height limit.
+
+<ChunkingDemo />
+
+Each node is a sliding window of consecutive units. Height 0 is
+individual sentences. Height 1 is every consecutive pair. Height 2 is
+every consecutive triple. Each higher-level node connects to the two
+nodes it was built from.
+
+Every node gets its own embedding. At query time, search runs across all
+of them. The right granularity emerges from the match.
+
+## Does this explode?
+
+The obvious objection: too many chunks. Without a height limit the lattice is a triangle. Growth is <Note label="quadratic"><Tex display>{"N + (N{-}1) + \\cdots + 1 = \\tfrac{N(N{+}1)}{2}"}</Tex>Same structure as Pascal's triangle. 1,000 sentences produce ~500k nodes.</Note>.
+
+Cap it at height <Tex>H</Tex> and it's <Note label="linear"><Tex display>{"\\sum_{h=0}^{H}(N - h) \\;=\\; N(H{+}1) - \\tfrac{H(H{+}1)}{2}"}</Tex><Tex display>{"\\approx\\;(H{+}1)\\,N \\quad \\text{for } N \\gg H"}</Tex></Note>. At <Tex>{"H{=}4"}</Tex> that's roughly <Tex>{"5N"}</Tex> total nodes. Drag the slider to see which nodes get pruned.
+
+<LatticeVisualizer />
+
+## What the lattice captures
+
+A parent node's embedding is not just "more text." It represents the
+combination. Two sentences about cause and effect produce a vector that
+neither sentence has alone.
+
+<QueryExample />
+
+## A real example
+
+Below is the Bee Movie script chunked into 131 units of 10 lines, built
+into a lattice of height 30. Each pixel is a node. Color is cosine
+similarity to the query.
+
+The first query describes events spread across four chunks. The best
+match is at height 3, not a leaf. The lattice found a granularity that
+no fixed chunking strategy would have produced.
+
+<LatticeHeatmap />
+
+## Thoughts on retrieval
+
+Top-k breaks here. The top 10 results for a query will be the same
+region at different heights. You need retrieval that understands overlap.
+
+The interesting idea is **top-k non-dominated**. Instead of returning
+the k highest-scoring nodes, return the k highest-scoring nodes where no
+result is an ancestor or descendant of another. The lattice already
+encodes these relationships. A graph database can check ancestry in a
+single traversal.
+
+This is the kind of thing the lattice makes possible that flat chunking
+can't do. The structure isn't just for indexing. It's for retrieval too.
+
+## Embedding models are the bottleneck
+
+The heatmap is honest. For most queries the best match is at height 0,
+1, or 2. The sweet spot is two to four chunks combined. Beyond that,
+embeddings dilute. Too many ideas in one vector.
+
+This is a model limitation, not a lattice limitation. Better models
+trained on long-form structure would push the ceiling higher. The
+lattice is ready for that.
+
+## What's open
+
+No granularity-aware benchmark exists. <Note label="MTEB">Massive Text Embedding Benchmark. The standard leaderboard for embedding models. Evaluates at the document level.</Note> and <Note label="BEIR">Benchmarking Information Retrieval. 18 datasets, zero-shot evaluation.</Note> don't test whether a system can adapt chunk size to the query. A good lattice benchmark would need queries at multiple granularities with granularity-aware relevance labels.
+
+The lattice is only as good as its atomic units. Clean sentence
+boundaries are easy. Dialogue, abbreviations, and lists break naïve
+splitters. The height limit is fixed at ingest and could adapt per
+document, but that hasn't been explored.
+
+Implementation lives in Neo4j. Each node is a vertex with text,
+embedding, and position. Edges encode parent-child relationships.
+Details on schema, Cypher queries, and retrieval performance coming in a
+follow-up.
+
+---
+
+*The lattice is an index-time decision. Any retrieval agent can sit on top of it.*

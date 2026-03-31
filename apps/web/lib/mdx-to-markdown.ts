@@ -4,13 +4,7 @@ import remarkStringify from "remark-stringify";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 
-const MDX_NODE_TYPES = new Set([
-  "mdxjsEsm",
-  "mdxJsxFlowElement",
-  "mdxJsxTextElement",
-  "mdxFlowExpression",
-  "mdxTextExpression",
-]);
+const STRING_LITERAL = /^["'`]([\s\S]*?)["'`]$/;
 
 function stripMdxNodes() {
   return (tree: Parameters<typeof visit>[0]) => {
@@ -18,8 +12,47 @@ function stripMdxNodes() {
       if (!parent || index === undefined) {
         return;
       }
-      if (MDX_NODE_TYPES.has(node.type)) {
-        (parent as { children: unknown[] }).children.splice(index, 1);
+
+      const n = node as unknown as Record<string, unknown>;
+      const siblings = (parent as unknown as { children: unknown[] }).children;
+
+      if (n.type === "mdxjsEsm") {
+        siblings.splice(index, 1);
+        return index;
+      }
+
+      if (n.type === "mdxJsxFlowElement" || n.type === "mdxJsxTextElement") {
+        const attrs = (n.attributes ?? []) as {
+          name?: string;
+          value?: unknown;
+        }[];
+        const labelAttr = attrs.find((a) => a.name === "label");
+        if (typeof labelAttr?.value === "string") {
+          siblings.splice(index, 1, {
+            type: "text",
+            value: labelAttr.value,
+          });
+          return index;
+        }
+
+        const kids = (n.children ?? []) as unknown[];
+        if (kids.length === 0) {
+          siblings.splice(index, 1);
+          return index;
+        }
+
+        siblings.splice(index, 1, ...kids);
+        return index;
+      }
+
+      if (n.type === "mdxFlowExpression" || n.type === "mdxTextExpression") {
+        const raw = String(n.value ?? "");
+        const m = STRING_LITERAL.exec(raw);
+        if (m) {
+          siblings.splice(index, 1, { type: "text", value: m[1] });
+        } else {
+          siblings.splice(index, 1);
+        }
         return index;
       }
     });

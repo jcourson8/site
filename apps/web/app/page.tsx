@@ -3,6 +3,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@workspace/ui/components/popover";
+import Link from "next/link";
 
 export const metadata = {
   title: "James Courson",
@@ -34,14 +35,28 @@ function TimelineRow({
   );
 
   if (href) {
+    const isExternal = href.startsWith("http");
+    const anchor = isExternal ? (
+      <a
+        className="text-sm transition-opacity duration-150 hover:text-foreground"
+        href={href}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {name}
+      </a>
+    ) : (
+      <Link
+        className="text-sm transition-opacity duration-150 hover:text-foreground"
+        href={href}
+      >
+        {name}
+      </Link>
+    );
+
     return (
       <div className="flex items-baseline justify-between gap-4 py-1.5 text-muted-foreground">
-        <a
-          className="text-sm transition-opacity duration-150 hover:text-foreground"
-          href={href}
-        >
-          {name}
-        </a>
+        {anchor}
         {dates}
       </div>
     );
@@ -67,6 +82,8 @@ export default function Page() {
           <a
             className="text-foreground underline decoration-1 decoration-muted-foreground underline-offset-4"
             href="https://www.brasfieldgorrie.com"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             Brasfield &amp; Gorrie
           </a>{" "}
@@ -121,68 +138,49 @@ export default function Page() {
         </div>
       </section>
 
-      {/* <section className="mt-14">
-        <h2 className="font-medium text-foreground text-sm">Present</h2>
-        <div className="mt-4 space-y-3 text-muted-foreground text-sm leading-relaxed">
-          <p>
-            Thinking about how agents interact with design systems. Building
-            tools that let machines write better code by giving them better
-            primitives.
-          </p>
-          <p>
-            Reading about typography. Trying to write more. Learning to leave
-            things out.
-          </p>
-        </div>
-      </section>
-
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Dispatch</h2>
         <div className="mt-3">
-          <div className="flex items-baseline justify-between gap-4 py-1.5 text-muted-foreground">
-            <Link
-              className="text-sm transition-opacity duration-150 hover:text-foreground"
-              href="/dispatch/agents-and-design-systems"
-            >
-              Agents and Design Systems
-            </Link>
-          </div>
+          <TimelineRow
+            href="/dispatch/lattice-chunking"
+            name="Lattice Chunking"
+            start="2026"
+          />
         </div>
       </section>
-
-      <section className="mt-14">
-        <h2 className="font-medium text-foreground text-sm">Craft</h2>
-        <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-          Interaction experiments and animation studies. A place to work in
-          public.{" "}
-          <Link
-            className="text-foreground underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-opacity duration-150 hover:opacity-60"
-            href="/craft/dither"
-          >
-            Dither studio
-          </Link>
-          .
-        </p>
-      </section> */}
 
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Connect</h2>
         <div className="mt-4 flex gap-5 text-sm">
           <a
             className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
-            href="mailto:jcourson@brasfieldgorrie.com"
+            href="mailto:jcourson8@gmail.com"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             Email
           </a>
           <a
             className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
-            href="https://github.com"
+            href="https://github.com/jcourson8"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             GitHub
           </a>
           <a
             className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
-            href="https://www.linkedin.com"
+            href="https://x.com/SharingPsyche"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            X
+          </a>
+          <a
+            className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
+            href="https://www.linkedin.com/in/james-courson/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             LinkedIn
           </a>
