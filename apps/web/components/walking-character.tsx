@@ -297,25 +297,10 @@ type Behavior =
   | "falling"
   | "exiting";
 
-function paint(
-  ctx: CanvasRenderingContext2D,
-  sprite: string[],
-  fill: string,
-  bg: string
-) {
+function paint(ctx: CanvasRenderingContext2D, sprite: string[], fill: string) {
   const fw = W * PX + PAD * 2;
   const fh = H * PX + PAD * 2;
-  const cx = fw / 2;
-  const cy = fh / 2;
-  const r = Math.max(cx, cy);
   ctx.clearRect(0, 0, fw, fh);
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-  grad.addColorStop(0, bg);
-  grad.addColorStop(1, "transparent");
-  ctx.globalAlpha = 0.55;
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, fw, fh);
-  ctx.globalAlpha = 1;
   ctx.fillStyle = fill;
   for (let r = 0; r < sprite.length; r++) {
     const row = sprite[r];
@@ -895,7 +880,7 @@ export function WalkingCharacter({
         }
       }
 
-      paint(ctx, sprite, color, bgColor);
+      paint(ctx, sprite, color);
       el.style.left = `${Math.round(x - PAD)}px`;
       el.style.bottom = `${Math.round(bottomY - PAD)}px`;
       el.style.opacity = String(canvasOpacity);

@@ -3,7 +3,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@workspace/ui/components/popover";
-import Link from "next/link";
 
 export const metadata = {
   title: "James Courson",
@@ -61,7 +60,7 @@ export default function Page() {
     <div className="mx-auto max-w-xl px-6 pt-16 pb-12 sm:pt-24">
       <header className="space-y-4">
         <h1 className="font-heading font-light text-2xl tracking-tight sm:text-3xl">
-          Building software that connect people and machines.
+          Currently building software that connects people and machines.
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Innovation specialist at{" "}
@@ -122,7 +121,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="mt-14">
+      {/* <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Present</h2>
         <div className="mt-4 space-y-3 text-muted-foreground text-sm leading-relaxed">
           <p>
@@ -164,7 +163,7 @@ export default function Page() {
           </Link>
           .
         </p>
-      </section>
+      </section> */}
 
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Connect</h2>
