@@ -61,8 +61,7 @@ export default function Page() {
     <div className="mx-auto max-w-xl px-6 pt-16 pb-12 sm:pt-24">
       <header className="space-y-4">
         <h1 className="font-heading font-light text-2xl tracking-tight sm:text-3xl">
-          Building software that connect people and machines.{" "}
-          <span className="text-muted">⊟</span>
+          Building software that connect people and machines.
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Innovation specialist at{" "}
