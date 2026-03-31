@@ -4,7 +4,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h1: ({ children }) => (
       <h1 className="font-heading font-light text-2xl tracking-tight sm:text-3xl">
-        {children} <span className="text-muted">⊟</span>
+        {children}
       </h1>
     ),
     h2: ({ children }) => (
