@@ -1,0 +1,33 @@
+export const metadata = {
+  title: "Agents and Design Systems",
+  description: "What happens when the consumer of your component library is a machine.",
+};
+
+# Agents and Design Systems
+
+What happens when the consumer of your component library is not a person
+sitting in VS Code but an agent writing code on your behalf?
+
+Most design systems are built for humans. Good docs, clear prop tables,
+Storybook demos. But agents don't read Storybook. They read source code,
+types, and whatever context you give them.
+
+## The problem
+
+An agent generating UI code will:
+
+- Guess at prop names if the types aren't obvious
+- Invent wrapper components that already exist
+- Ignore composition patterns in favor of monolithic blocks
+- Miss accessibility primitives entirely
+
+The fix isn't better prompts. It's better primitives.
+
+## What I'm thinking about
+
+- Component APIs that are self-documenting through types alone
+- Structured metadata that agents can consume (not just humans)
+- The line between a design system and an SDK
+- Whether `/llms.txt` for component libraries changes how agents write UI
+
+More on this as I build it.

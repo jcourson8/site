@@ -1,10 +1,11 @@
-import { DitherPlayground } from "@/components/dither-playground"
+import { DitherStudio } from "@/components/dither/dither-studio";
 
 export const metadata = {
   title: "Dither — Craft",
-  description: "Ordered dithering WebGL playground.",
-}
+  description:
+    "Ordered dithering WebGL studio. Generate patterns or apply dithering to images.",
+};
 
 export default function DitherPage() {
-  return <DitherPlayground />
+  return <DitherStudio />;
 }

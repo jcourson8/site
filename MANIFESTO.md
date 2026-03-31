@@ -56,9 +56,9 @@ Three typefaces. Each has a single job.
 - GT Canon appears **once per page** at most. It is the headline typeface.
   Using it on every heading dilutes it. The name "James Courson" is set in
   Inter (small, muted). The *idea* gets Canon.
-- Section headings (Work, Now, Craft, Connect) are Geist Mono, uppercase,
-  `text-[11px]`, `tracking-widest`, `text-muted-foreground`. They are labels,
-  not titles.
+- Section headings (Work, Sport, Present, Craft, Connect) are Inter,
+  `font-medium text-foreground text-sm`. Clean and direct — they're headings,
+  not decorative labels.
 - Body text is Inter at `text-sm` with `leading-relaxed`.
 - The status bar is Geist Mono at `text-[11px]`.
 
@@ -99,6 +99,7 @@ The site gets a fixed number of animated moments. Spend them deliberately.
 | 2 | Links | Color transition on hover | `ease` | 150ms |
 | 3 | Page transitions | Crossfade between routes | `ease-out-quart` | 200ms |
 | 4 | `/craft` demos | Unlimited — animation is the content | varies | varies |
+| 5 | Tomo (walking character) | Pixel sprite walks bottom edge, responds to cursor, grabbable, speaks | linear | continuous |
 
 Everything outside this budget is static. No scroll reveals, no staggered
 entrances, no parallax, no loading animations.
@@ -116,12 +117,14 @@ entrances, no parallax, no loading animations.
 ## Site Structure
 
 ```
-/                  The identity. Headline, work list, now, craft, connect.
+/                  The identity. Headline, work list, present, craft, connect.
 /projects/[slug]   Individual project detail. Problem, approach, outcome.
 /craft             Index of interaction experiments and animation demos.
 /craft/[slug]      Individual craft piece. Live demo + optional writeup.
 /writing           Index of posts (if/when you write).
 /writing/[slug]    Individual post.
+/llms.txt          Auto-generated index of all pages for LLMs.
+/*.md              Clean markdown version of any page (auto-derived from source).
 ```
 
 No /about page. The homepage *is* the about page.
@@ -142,13 +145,12 @@ No /about page. The homepage *is* the about page.
 - Content: Inter, `text-sm leading-relaxed`
 - Spacing: `mt-14` between sections, `mt-16` after header
 
-### Status Bar
+### Footer
 
-- Fixed to bottom, full width
-- `bg-muted/60 backdrop-blur-sm`
-- Height: `h-6`
-- Left: ▪ mark + "james courson"
-- Right: "auburn, al · 2026"
+- Lives in root layout — persistent across all page navigations
+- `bg-background`, height `h-6`
+- Left: "James Courson" + sleeping Tomo sprite (clickable toggle)
+- Right: "Inspiration" — clickable, opens popover with design inspiration links
 - All in Geist Mono at `text-[11px]`
 
 ### Content Width
@@ -161,14 +163,14 @@ No /about page. The homepage *is* the about page.
 
 Every page follows this reading order:
 
-1. **Who** — your name, small, always at the top
-2. **What** — the headline idea, in Canon
-3. **Context** — one sentence of bio
-4. **Work** — the list
-5. **Now** — what you're thinking about
-6. **Craft** — the playground
-7. **Connect** — how to reach you
-8. **Status bar** — persistent identity at the bottom
+1. **What** — the headline idea, in Canon
+2. **Context** — bio with role, employer, Magnus
+3. **Work** — timeline with dates and links
+4. **Sport** — athletic milestones and goals
+5. **Present** — what you're thinking about
+6. **Craft** — link to interaction experiments
+7. **Connect** — email, GitHub, LinkedIn
+8. **Footer** — name + sleeping Tomo toggle (left), inspiration popover (right)
 
 ---
 
@@ -189,7 +191,8 @@ Every page follows this reading order:
 - **UI library:** `packages/ui` — shared components (shadcn/ui foundation)
 - **Styling:** Tailwind CSS v4
 - **Animation:** CSS transitions for the main site. Motion library only on `/craft`.
-- **Content:** MDX for writing and project pages
+- **Content:** MDX for writing and project pages (`@next/mdx`)
+- **AI-ready:** `/llms.txt` index + per-page `.md` serving (auto-discovered, not manually maintained)
 - **Deployment:** Vercel
 - **Performance targets:**
   - Lighthouse: 100 across all categories
@@ -197,7 +200,7 @@ Every page follows this reading order:
   - Total Blocking Time: 0ms
   - Cumulative Layout Shift: 0
   - Bundle size: < 50KB first load JS
-- **No client JS on the homepage** unless the mascot requires it
+- **Minimal client JS** — Tomo is the one exception (tiny canvas, ~4KB, state persisted via localStorage)
 
 ---
 
@@ -205,20 +208,37 @@ Every page follows this reading order:
 
 - [x] Typefaces: GT Canon (display), Inter (body), Geist Mono (system)
 - [x] GT Canon is reserved — headline only, once per page max
-- [x] Section headings are mono labels, not display type
+- [x] Section headings: Inter, `font-medium text-foreground text-sm` — headings, not labels
 - [x] Mascot: squared Unicode glyphs (⊞ ⊟ ⊠ ⊡ ▪)
-- [x] Glyphs are rare — one on the homepage (▪ in status bar)
-- [x] Status bar at bottom, inspired by VS Code/Cursor
-- [x] Name is quiet (text-sm, muted), headline is the star
+- [x] Footer at bottom with portrait popover + inspiration popover
+- [x] Headline is the star — name appears only in footer
 - [x] Content width: max-w-xl
+- [x] Headline: "Currently building software that connect people and machines."
+- [x] Work section: timeline format with dates and links (not case studies)
+- [x] Sport section between Work and Now
+- [x] Present section: agents, design systems, typography
+- [x] Craft launches with unified dither studio at `/craft/dither` (generate + image)
+- [x] Bio: role at Brasfield & Gorrie, mentions Magnus
+- [x] Tomo: pixel-art desktop pet in root layout, persists across navigations
+  - Sleeps inline next to "James Courson" in footer — click to wake
+  - Walks bottom edge, looks at cursor, sits, sleeps if idle
+  - Grabbable with drag-and-drop; deploys parachute on long falls
+  - Click (not drag) triggers speech tooltips — random quips + context-aware lines
+  - "zzz" indicator in footer when active — click to send Tomo home to sleep
+  - Falls to ground before running if dismissed mid-air
+  - Full state persisted to localStorage (position, behavior, parachute) across refresh
+  - State machine: hidden → entering → walk/idle/look/sit/sleep/startled/held/falling → exiting → hidden
+  - Canvas-based, ~4KB, zero deps beyond React
+- [x] Footer: extracted to `SiteFooter` component, lives in root layout, shows on every page
+- [x] Footer inspiration: popover linking to design inspirations (p.cv, paco.me, jakub.kr, etc.)
+- [x] MDX support via `@next/mdx` — `.mdx` files work as pages in App Router
+- [x] AI-ready: `/llms.txt` + `*.md` serving, auto-discovered from `app/` page files
+- [x] Domain: jamescourson.com
+- [x] Work section displays company names (not URLs)
 
 ## Open Questions
 
-- [ ] What is the final headline? (Current: "I build software and care about how it feels.")
-- [ ] Which projects to feature? (Current placeholders: Magnus, Skills, Compute SDK, Payload CMS)
-- [ ] What does the "Now" section actually say?
-- [ ] What does the `/craft` section contain at launch?
-- [ ] Domain name?
+- [ ] Which projects to feature beyond work timeline?
 - [ ] Favicon — ▪ solid square?
 
 ---

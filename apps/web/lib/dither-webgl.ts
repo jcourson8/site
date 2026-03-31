@@ -1,61 +1,35 @@
-/** Ordered dithering demo — WebGL2, self-contained (no runtime deps). */
+/**
+ * Procedural dithering demo — shape-field GLSL + shared WebGL utilities.
+ *
+ * The Bayer/noise GLSL is inlined in the fragment shader since the procedural
+ * shape field is tightly coupled to the dither sampling. The compiler/linker
+ * utilities are re-exported from the shared core.
+ */
 
-export type DitherUniforms = {
-  time: WebGLUniformLocation | null
-  resolution: WebGLUniformLocation | null
-  pixelRatio: WebGLUniformLocation | null
-  pxSize: WebGLUniformLocation | null
-  scale: WebGLUniformLocation | null
-  rotation: WebGLUniformLocation | null
-  offset: WebGLUniformLocation | null
-  anim: WebGLUniformLocation | null
-  shape: WebGLUniformLocation | null
-  dither: WebGLUniformLocation | null
-  fg: WebGLUniformLocation | null
-  bg: WebGLUniformLocation | null
-}
+export {
+  bindActiveProgram,
+  compileShader,
+  linkProgram,
+} from "@/lib/webgl/core";
 
-export function compileShader(
-  gl: WebGL2RenderingContext,
-  type: number,
-  src: string,
-): WebGLShader | null {
-  const s = gl.createShader(type)
-  if (!s) return null
-  gl.shaderSource(s, src)
-  gl.compileShader(s)
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(s))
-    gl.deleteShader(s)
-    return null
-  }
-  return s
-}
-
-export function linkProgram(
-  gl: WebGL2RenderingContext,
-  vs: WebGLShader,
-  fs: WebGLShader,
-): WebGLProgram | null {
-  const p = gl.createProgram()
-  if (!p) return null
-  gl.attachShader(p, vs)
-  gl.attachShader(p, fs)
-  gl.bindAttribLocation(p, 0, "a_position")
-  gl.linkProgram(p)
-  gl.deleteShader(vs)
-  gl.deleteShader(fs)
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
-    console.error(gl.getProgramInfoLog(p))
-    gl.deleteProgram(p)
-    return null
-  }
-  return p
+export interface DitherUniforms {
+  anim: WebGLUniformLocation | null;
+  bg: WebGLUniformLocation | null;
+  dither: WebGLUniformLocation | null;
+  fg: WebGLUniformLocation | null;
+  offset: WebGLUniformLocation | null;
+  pixelRatio: WebGLUniformLocation | null;
+  pxSize: WebGLUniformLocation | null;
+  resolution: WebGLUniformLocation | null;
+  rotation: WebGLUniformLocation | null;
+  scale: WebGLUniformLocation | null;
+  shape: WebGLUniformLocation | null;
+  time: WebGLUniformLocation | null;
 }
 
 export function getDitherUniforms(
   gl: WebGL2RenderingContext,
-  p: WebGLProgram,
+  p: WebGLProgram
 ): DitherUniforms {
   return {
     time: gl.getUniformLocation(p, "u_time"),
@@ -70,7 +44,7 @@ export function getDitherUniforms(
     dither: gl.getUniformLocation(p, "u_dither"),
     fg: gl.getUniformLocation(p, "u_fg"),
     bg: gl.getUniformLocation(p, "u_bg"),
-  }
+  };
 }
 
 export const VERT = `#version 300 es
@@ -78,7 +52,7 @@ in vec2 a_position;
 void main() {
   gl_Position = vec4(a_position, 0.0, 1.0);
 }
-`
+`;
 
 export const FRAG = `#version 300 es
 precision highp float;
@@ -190,4 +164,4 @@ void main() {
   vec3 color = mix(u_bg, u_fg, m);
   fragColor = vec4(color, 1.0);
 }
-`
+`;
