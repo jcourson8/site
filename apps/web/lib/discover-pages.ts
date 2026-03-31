@@ -6,6 +6,7 @@ const PAGE_EXTENSIONS = [".tsx", ".mdx", ".md"];
 const PAGE_PATTERN = /\/?page\.(tsx|mdx|md)$/;
 const TITLE_PATTERN = /title:\s*["'`]([^"'`]+)["'`]/;
 const DESC_PATTERN = /description:\s*\n?\s*["'`]([^"'`]+)["'`]/;
+const DRAFT_PATTERN = /draft:\s*true/;
 
 export interface PageInfo {
   description?: string;
@@ -26,15 +27,17 @@ function routeFromFilePath(filePath: string): string {
 
 async function extractMetadata(
   filePath: string
-): Promise<{ title?: string; description?: string }> {
+): Promise<{ title?: string; description?: string; draft?: boolean }> {
   const source = await readFile(filePath, "utf-8");
 
   const titleMatch = TITLE_PATTERN.exec(source);
   const descMatch = DESC_PATTERN.exec(source);
+  const isDraft = DRAFT_PATTERN.test(source);
 
   return {
     title: titleMatch?.[1],
     description: descMatch?.[1],
+    draft: isDraft || undefined,
   };
 }
 
@@ -69,6 +72,10 @@ async function walk(dir: string): Promise<PageInfo[]> {
     const ext = name.replace("page", "");
     const route = routeFromFilePath(full);
     const meta = await extractMetadata(full);
+
+    if (meta.draft) {
+      continue;
+    }
 
     const fallbackTitle =
       route === "/" ? "Home" : (route.split("/").pop() ?? route);

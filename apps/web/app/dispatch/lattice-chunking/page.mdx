@@ -12,7 +12,7 @@ export const metadata = {
 
 # Lattice Chunking
 
-<p className="mt-1 font-mono text-[11px] text-muted-foreground">4/1/2026</p>
+<p className="mt-1 font-mono text-[11px] text-muted-foreground">4/1/2026 - in progress</p>
 
 Retrieval systems chunk text before indexing. Small chunks match precise
 questions. Large chunks capture broader context. The right size depends
@@ -64,7 +64,11 @@ no fixed chunking strategy would have produced.
 
 <LatticeHeatmap alt="Interactive heatmap: Bee Movie script (131 chunks, 3,596 lattice nodes) with cosine similarity to selected queries. The 'Sequence' query peaks at height 3, not a leaf node." />
 
-## Thoughts on retrieval
+---
+
+*More on retrieval, embedding bottlenecks, and open questions coming soon.*
+
+{/* ## Thoughts on retrieval
 
 Top-k breaks here. The top 10 results for a query will be the same
 region at different heights. You need retrieval that understands overlap.
@@ -90,7 +94,10 @@ lattice is ready for that.
 
 ## What's open
 
-No granularity-aware benchmark exists. <Note label="MTEB">Massive Text Embedding Benchmark. The standard leaderboard for embedding models. Evaluates at the document level.</Note> and <Note label="BEIR">Benchmarking Information Retrieval. 18 datasets, zero-shot evaluation.</Note> don't test whether a system can adapt chunk size to the query. A good lattice benchmark would need queries at multiple granularities with granularity-aware relevance labels.
+No granularity-aware benchmark exists. MTEB and BEIR don't test whether
+a system can adapt chunk size to the query. A good lattice benchmark
+would need queries at multiple granularities with granularity-aware
+relevance labels.
 
 The lattice is only as good as its atomic units. Clean sentence
 boundaries are easy. Dialogue, abbreviations, and lists break naïve
@@ -104,4 +111,4 @@ follow-up.
 
 ---
 
-*The lattice is an index-time decision. Any retrieval agent can sit on top of it.*
+*The lattice is an index-time decision. Any retrieval agent can sit on top of it.* */}

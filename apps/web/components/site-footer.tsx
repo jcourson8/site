@@ -35,6 +35,14 @@ export function SiteFooter() {
                   { href: "https://code.storage", label: "code.storage" },
                   { href: "https://ui.land", label: "ui.land" },
                   { href: "https://jakub.kr/", label: "jakub.kr" },
+                  {
+                    href: "https://www.anthropic.com/research/",
+                    label: "anthropic.com/research",
+                  },
+                  {
+                    href: "https://www.trychroma.com/research",
+                    label: "trychroma.com/research",
+                  },
                 ].map(({ href, label }) => (
                   <a
                     className="rounded-md px-2 py-1 text-muted-foreground text-xs transition-colors duration-150 hover:bg-accent hover:text-foreground"

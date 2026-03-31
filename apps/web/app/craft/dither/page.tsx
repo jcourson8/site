@@ -4,6 +4,7 @@ export const metadata = {
   title: "Dither — Craft",
   description:
     "Ordered dithering WebGL studio. Generate patterns or apply dithering to images.",
+  draft: true,
 };
 
 export default function DitherPage() {

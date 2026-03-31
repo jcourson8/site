@@ -38,7 +38,7 @@ function TimelineRow({
     const isExternal = href.startsWith("http");
     const anchor = isExternal ? (
       <a
-        className="text-sm transition-opacity duration-150 hover:text-foreground"
+        className="text-sm underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
         href={href}
         rel="noopener noreferrer"
         target="_blank"
@@ -47,7 +47,7 @@ function TimelineRow({
       </a>
     ) : (
       <Link
-        className="text-sm transition-opacity duration-150 hover:text-foreground"
+        className="text-sm underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
         href={href}
       >
         {name}
@@ -80,7 +80,7 @@ export default function Page() {
         <p className="text-muted-foreground text-sm leading-relaxed">
           Innovation specialist at{" "}
           <a
-            className="text-foreground underline decoration-1 decoration-muted-foreground underline-offset-4"
+            className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
             href="https://www.brasfieldgorrie.com"
             rel="noopener noreferrer"
             target="_blank"
@@ -90,7 +90,7 @@ export default function Page() {
           creating{" "}
           <Popover>
             <PopoverTrigger
-              className="cursor-help text-foreground underline decoration-1 decoration-muted-foreground/40 decoration-dashed underline-offset-4"
+              className="cursor-help underline decoration-1 decoration-muted-foreground/40 decoration-dashed underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
               closeDelay={120}
               delay={0}
               openOnHover
@@ -144,14 +144,14 @@ export default function Page() {
           <TimelineRow
             href="/dispatch/lattice-chunking"
             name="Lattice Chunking"
-            start="2026"
+            start="IN PROGRESS"
           />
         </div>
       </section>
 
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Connect</h2>
-        <div className="mt-4 flex gap-5 text-sm">
+        <div className="mt-4 flex gap-5 text-muted-foreground text-sm">
           <a
             className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
             href="mailto:jcourson8@gmail.com"
