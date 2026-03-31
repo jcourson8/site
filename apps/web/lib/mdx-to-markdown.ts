@@ -26,6 +26,16 @@ function stripMdxNodes() {
           name?: string;
           value?: unknown;
         }[];
+
+        const altAttr = attrs.find((a) => a.name === "alt");
+        if (typeof altAttr?.value === "string") {
+          siblings.splice(index, 1, {
+            type: "paragraph",
+            children: [{ type: "text", value: `[${altAttr.value}]` }],
+          });
+          return index;
+        }
+
         const labelAttr = attrs.find((a) => a.name === "label");
         if (typeof labelAttr?.value === "string") {
           siblings.splice(index, 1, {

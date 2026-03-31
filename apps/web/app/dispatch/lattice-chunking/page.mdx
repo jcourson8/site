@@ -26,7 +26,7 @@ Start with semantic units. Sentences, paragraphs, whatever the text
 naturally breaks into. Build overlapping windows: every consecutive
 pair, every triple, every quadruple, up to some height limit.
 
-<ChunkingDemo />
+<ChunkingDemo alt="Interactive: five sentences are split into semantic units, then built into a lattice of overlapping windows at increasing heights" />
 
 Each node is a sliding window of consecutive units. Height 0 is
 individual sentences. Height 1 is every consecutive pair. Height 2 is
@@ -42,7 +42,7 @@ The obvious objection: too many chunks. Without a height limit the lattice is a 
 
 Cap it at height <Tex>H</Tex> and it's <Note label="linear"><Tex display>{"\\sum_{h=0}^{H}(N - h) \\;=\\; N(H{+}1) - \\tfrac{H(H{+}1)}{2}"}</Tex><Tex display>{"\\approx\\;(H{+}1)\\,N \\quad \\text{for } N \\gg H"}</Tex></Note>. At <Tex>{"H{=}4"}</Tex> that's roughly <Tex>{"5N"}</Tex> total nodes. Drag the slider to see which nodes get pruned.
 
-<LatticeVisualizer />
+<LatticeVisualizer alt="Interactive: drag a slider to cap the lattice height and see how node count scales linearly" />
 
 ## What the lattice captures
 
@@ -50,7 +50,7 @@ A parent node's embedding is not just "more text." It represents the
 combination. Two sentences about cause and effect produce a vector that
 neither sentence has alone.
 
-<QueryExample />
+<QueryExample alt="Interactive: three queries at different granularities — factual (leaf match), thematic (mid-level match), broad (full-passage match)" />
 
 ## A real example
 
@@ -62,7 +62,7 @@ The first query describes events spread across four chunks. The best
 match is at height 3, not a leaf. The lattice found a granularity that
 no fixed chunking strategy would have produced.
 
-<LatticeHeatmap />
+<LatticeHeatmap alt="Interactive heatmap: Bee Movie script (131 chunks, 3,596 lattice nodes) with cosine similarity to selected queries. The 'Sequence' query peaks at height 3, not a leaf node." />
 
 ## Thoughts on retrieval
 
