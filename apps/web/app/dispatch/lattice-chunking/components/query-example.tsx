@@ -104,7 +104,7 @@ export function QueryExample() {
         <div className="mt-5 flex flex-col gap-2">
           {QUERIES.map((q) => (
             <button
-              className={`rounded-md border p-3 text-left transition-colors duration-150 ${
+              className={`cursor-pointer rounded-md border p-3 text-left transition-colors duration-150 ${
                 activeId === q.id
                   ? "border-foreground/20 bg-muted"
                   : "border-border hover:border-foreground/10 hover:bg-muted/50"

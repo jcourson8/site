@@ -459,29 +459,65 @@ export function WalkingCharacter({
       }
     }
 
+    function startDrag(clientX: number, clientY: number) {
+      pendingDown = false;
+      const ch = H * PX;
+      const canvasTop = window.innerHeight - bottomY - ch;
+      dragOffsetX = clientX - x;
+      dragOffsetY = clientY - canvasTop;
+      document.body.style.cursor = "grabbing";
+      behavior = "held";
+      behaviorT = 0;
+      frame = 0;
+      jumpY = 0;
+      idleAccum = 0;
+      speechVisible = false;
+      if (speechEl) {
+        speechEl.style.opacity = "0";
+      }
+    }
+
+    function releaseDrag() {
+      pendingDown = false;
+      document.body.style.cursor = "";
+      suppressNextClick = true;
+      behavior = "falling";
+      behaviorT = 0;
+      fallVelocity = 0;
+      fallStartY = bottomY;
+      parachuteOpen = false;
+    }
+
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
       if (pendingDown && behavior !== "held") {
         const moved = Math.hypot(e.clientX - downX, e.clientY - downY);
         if (moved > 5) {
-          pendingDown = false;
-          const ch = H * PX;
-          const canvasTop = window.innerHeight - bottomY - ch;
-          dragOffsetX = downX - x;
-          dragOffsetY = downY - canvasTop;
-          document.body.style.cursor = "grabbing";
-          behavior = "held";
-          behaviorT = 0;
-          frame = 0;
-          jumpY = 0;
-          idleAccum = 0;
-          speechVisible = false;
-          speechEl.style.opacity = "0";
+          startDrag(downX, downY);
         }
       }
     };
     window.addEventListener("mousemove", onMove, { passive: true });
+
+    const onTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t) {
+        return;
+      }
+      mx = t.clientX;
+      my = t.clientY;
+      if (pendingDown && behavior !== "held") {
+        const moved = Math.hypot(t.clientX - downX, t.clientY - downY);
+        if (moved > 8) {
+          startDrag(downX, downY);
+        }
+      }
+      if (behavior === "held") {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
 
     const onMouseUp = () => {
       if (pendingDown && behavior !== "held") {
@@ -493,16 +529,23 @@ export function WalkingCharacter({
       if (behavior !== "held") {
         return;
       }
-      pendingDown = false;
-      document.body.style.cursor = "";
-      suppressNextClick = true;
-      behavior = "falling";
-      behaviorT = 0;
-      fallVelocity = 0;
-      fallStartY = bottomY;
-      parachuteOpen = false;
+      releaseDrag();
     };
     window.addEventListener("mouseup", onMouseUp);
+
+    const onTouchEnd = () => {
+      if (pendingDown && behavior !== "held") {
+        pendingDown = false;
+        showSpeech();
+        return;
+      }
+      if (behavior !== "held") {
+        return;
+      }
+      releaseDrag();
+    };
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("touchcancel", onTouchEnd);
 
     const onCanvasDown = (e: MouseEvent) => {
       if (
@@ -520,6 +563,52 @@ export function WalkingCharacter({
       downY = e.clientY;
     };
     el.addEventListener("mousedown", onCanvasDown);
+
+    const onCanvasTouchStart = (e: TouchEvent) => {
+      if (
+        behavior === "hidden" ||
+        behavior === "entering" ||
+        behavior === "exiting" ||
+        behavior === "falling"
+      ) {
+        return;
+      }
+      const t = e.touches[0];
+      if (!t) {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      pendingDown = true;
+      downX = t.clientX;
+      downY = t.clientY;
+    };
+    el.addEventListener("touchstart", onCanvasTouchStart, { passive: false });
+
+    const onGrabFromToggle = (clientX: number, clientY: number) => {
+      const anchor = getAnchorX?.() ?? window.innerWidth / 2;
+      const cw = W * PX;
+      const ch = H * PX;
+      x = anchor - cw / 2;
+      bottomY = 8;
+      canvasOpacity = 1;
+      tomoStore.setOnScreen(true);
+      dragOffsetX = clientX - x;
+      dragOffsetY = clientY - (window.innerHeight - bottomY - ch);
+      mx = clientX;
+      my = clientY;
+      document.body.style.cursor = "grabbing";
+      behavior = "held";
+      behaviorT = 0;
+      frame = 0;
+      jumpY = 0;
+      idleAccum = 0;
+      speechVisible = false;
+      if (speechEl) {
+        speechEl.style.opacity = "0";
+      }
+    };
+    tomoStore.setDragGrabHandler(onGrabFromToggle);
 
     const onClick = () => {
       if (suppressNextClick) {
@@ -915,9 +1004,14 @@ export function WalkingCharacter({
       saveState();
       document.body.style.cursor = "";
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
       window.removeEventListener("click", onClick);
       el.removeEventListener("mousedown", onCanvasDown);
+      el.removeEventListener("touchstart", onCanvasTouchStart);
+      tomoStore.setDragGrabHandler(null);
     };
   }, [getAnchorX]);
 

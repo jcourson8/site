@@ -114,7 +114,7 @@ export function ChunkDistribution() {
           {DISTRIBUTIONS[active].note}
         </p>
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
+      <figcaption className="mt-2 text-balance text-center font-mono text-[11px] text-muted-foreground">
         Retrieved chunk size distribution for the same query set across chunking
         methods.
       </figcaption>

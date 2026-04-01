@@ -88,7 +88,7 @@ export function NodeGrowthTable() {
           </table>
         </div>
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
+      <figcaption className="mt-2 text-balance text-center font-mono text-[11px] text-muted-foreground">
         Node growth calculator. Adjust n and H to see scaling behavior.
       </figcaption>
     </figure>

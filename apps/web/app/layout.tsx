@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import "@workspace/ui/globals.css";
 import { cn } from "@workspace/ui/lib/utils";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TomoLayout } from "@/components/tomo-layout";
@@ -53,6 +54,7 @@ export default function RootLayout({
       <body className="flex h-dvh flex-col overflow-hidden">
         <ThemeProvider>
           <main className="flex-1 overflow-y-auto overscroll-contain">
+            <ScrollToTop />
             {children}
           </main>
           <SiteFooter />

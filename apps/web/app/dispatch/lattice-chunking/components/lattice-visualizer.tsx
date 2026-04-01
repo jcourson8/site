@@ -145,9 +145,9 @@ export function LatticeVisualizer() {
 
         <svg
           aria-label="Binomial lattice graph"
-          className="mx-auto block"
+          className="mx-auto block w-full"
           role="img"
-          style={{ width: svgW, height: svgH }}
+          style={{ maxWidth: svgW }}
           viewBox={`0 0 ${svgW} ${svgH}`}
         >
           <title>Binomial lattice graph with height limit</title>
@@ -222,10 +222,11 @@ export function LatticeVisualizer() {
             y2={svgH - padY - maxHeight * ROW - ROW / 2}
           />
         </svg>
+
+        <p className="mt-3 text-center font-mono text-[11px] text-muted-foreground">
+          8 sentences, height capped at {maxHeight}. Greyed nodes are pruned.
+        </p>
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
-        8 sentences, height capped at {maxHeight}. Greyed nodes are pruned.
-      </figcaption>
     </figure>
   );
 }

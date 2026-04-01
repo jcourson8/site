@@ -308,7 +308,7 @@ export function ChunkingDemo() {
         <div className="mb-5 flex items-center justify-center gap-3">
           <button
             aria-label="Previous step"
-            className="text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
+            className="cursor-pointer text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
             disabled={step === 0}
             onClick={() => goTo(step - 1)}
             type="button"
@@ -331,7 +331,7 @@ export function ChunkingDemo() {
             {STEP_IDS.map((id, i) => (
               <button
                 aria-label={`Step: ${id}`}
-                className={`h-1.5 rounded-full transition-all duration-200 ease-out ${
+                className={`h-1.5 cursor-pointer rounded-full transition-all duration-200 ease-out ${
                   i === step
                     ? "w-6 bg-foreground"
                     : "w-1.5 bg-foreground/20 hover:bg-foreground/40"
@@ -345,7 +345,7 @@ export function ChunkingDemo() {
 
           <button
             aria-label="Next step"
-            className="text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
+            className="cursor-pointer text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
             disabled={step === STEP_COUNT - 1 && done}
             onClick={() => goTo(step + 1)}
             type="button"
@@ -387,7 +387,7 @@ export function ChunkingDemo() {
                     ? "var(--foreground)"
                     : "var(--muted-foreground)",
                   backgroundColor: showColor
-                    ? `color-mix(in oklch, ${COLORS[i]}, transparent 78%)`
+                    ? `color-mix(in srgb, ${COLORS[i]} 22%, transparent)`
                     : "transparent",
                   transition: "background-color 300ms ease, color 300ms ease",
                 }}

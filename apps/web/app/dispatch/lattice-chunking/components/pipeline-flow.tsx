@@ -121,7 +121,7 @@ export function PipelineFlow() {
           })}
         </div>
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
+      <figcaption className="mt-2 text-balance text-center font-mono text-[11px] text-muted-foreground">
         Search pipeline stages. Click to expand details.
       </figcaption>
     </figure>

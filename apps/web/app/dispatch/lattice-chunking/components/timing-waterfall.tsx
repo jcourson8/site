@@ -124,7 +124,7 @@ export function TimingWaterfall() {
           </div>
         )}
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
+      <figcaption className="mt-2 text-balance text-center font-mono text-[11px] text-muted-foreground">
         Median per-search timing breakdown. Toggle to compare before/after
         optimization.
       </figcaption>

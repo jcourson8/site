@@ -153,7 +153,7 @@ export function LatticeHeatmap() {
           <div className="flex items-center gap-3">
             <button
               aria-label="Previous query"
-              className="text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
+              className="cursor-pointer text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
               disabled={activeQuery === 0}
               onClick={prev}
               type="button"
@@ -176,7 +176,7 @@ export function LatticeHeatmap() {
               {queryLabels.map((label, i) => (
                 <button
                   aria-label={label}
-                  className={`h-1.5 rounded-full transition-all duration-200 ease-out ${
+                  className={`h-1.5 cursor-pointer rounded-full transition-all duration-200 ease-out ${
                     i === activeQuery
                       ? "w-6 bg-foreground"
                       : "w-1.5 bg-foreground/20 hover:bg-foreground/40"
@@ -190,7 +190,7 @@ export function LatticeHeatmap() {
 
             <button
               aria-label="Next query"
-              className="text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
+              className="cursor-pointer text-muted-foreground transition-opacity duration-150 hover:opacity-60 disabled:opacity-20"
               disabled={activeQuery === total - 1}
               onClick={next}
               type="button"
@@ -225,7 +225,7 @@ export function LatticeHeatmap() {
           </div>
         </div>
 
-        <p className="mb-3 h-20 overflow-hidden font-mono text-[11px] text-muted-foreground leading-relaxed">
+        <p className="mb-3 min-h-20 font-mono text-[11px] text-muted-foreground leading-relaxed">
           &ldquo;{data.examples[QUERY_ORDER[activeQuery] ?? 0]?.query}&rdquo;
         </p>
 
@@ -255,7 +255,7 @@ export function LatticeHeatmap() {
           )}
         </svg>
       </div>
-      <figcaption className="mt-2 text-center font-mono text-[11px] text-muted-foreground">
+      <figcaption className="mt-2 text-balance text-center font-mono text-[11px] text-muted-foreground">
         Bee Movie script · {data.meta.nodeCount.toLocaleString()} lattice nodes
         · cosine similarity vs. query
       </figcaption>

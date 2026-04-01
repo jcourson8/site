@@ -56,6 +56,7 @@ function paintMini(
 }
 
 type TomoListener = () => void;
+type DragGrabHandler = (clientX: number, clientY: number) => void;
 let tomoActive = (() => {
   try {
     return (
@@ -67,6 +68,7 @@ let tomoActive = (() => {
 })();
 let tomoAnchorEl: HTMLElement | null = null;
 let tomoOnScreen = false;
+let dragGrabHandler: DragGrabHandler | null = null;
 const listeners = new Set<TomoListener>();
 
 export const tomoStore = {
@@ -103,6 +105,23 @@ export const tomoStore = {
     const rect = tomoAnchorEl?.getBoundingClientRect();
     return rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
   },
+  setDragGrabHandler(handler: DragGrabHandler | null) {
+    dragGrabHandler = handler;
+  },
+  grabFromToggle(clientX: number, clientY: number) {
+    if (!tomoActive) {
+      tomoActive = true;
+      try {
+        localStorage.setItem("tomo", "1");
+      } catch {
+        // storage unavailable
+      }
+      for (const fn of listeners) {
+        fn();
+      }
+    }
+    dragGrabHandler?.(clientX, clientY);
+  },
   subscribe(fn: TomoListener) {
     listeners.add(fn);
     return () => {
@@ -133,6 +152,11 @@ export function TomoToggle() {
   const returning = !active && onScreen;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLButtonElement>(null);
+  const dragState = useRef<{
+    startX: number;
+    startY: number;
+    dragging: boolean;
+  } | null>(null);
 
   useEffect(() => {
     tomoStore.setAnchor(wrapRef.current);
@@ -173,13 +197,55 @@ export function TomoToggle() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) {
+      return;
+    }
+
+    const onPointerDown = (e: PointerEvent) => {
+      dragState.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        dragging: false,
+      };
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      const ds = dragState.current;
+      if (!ds || ds.dragging) {
+        return;
+      }
+      const moved = Math.hypot(e.clientX - ds.startX, e.clientY - ds.startY);
+      if (moved > 8) {
+        ds.dragging = true;
+        tomoStore.grabFromToggle(e.clientX, e.clientY);
+        dragState.current = null;
+      }
+    };
+
+    const onPointerUp = () => {
+      const ds = dragState.current;
+      if (ds && !ds.dragging) {
+        tomoStore.toggle();
+      }
+      dragState.current = null;
+    };
+
+    el.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerup", onPointerUp);
+
+    return () => {
+      el.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
+  }, []);
+
   return (
     <button
-      className="inline-flex cursor-pointer items-center transition-opacity duration-150 hover:opacity-60"
-      onClick={(e) => {
-        e.stopPropagation();
-        tomoStore.toggle();
-      }}
+      className="inline-flex cursor-pointer touch-none items-center transition-opacity duration-150 hover:opacity-60"
       ref={wrapRef}
       type="button"
     >
