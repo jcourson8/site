@@ -3,7 +3,7 @@ import type { MDXComponents } from "mdx/types";
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h1: ({ children }) => (
-      <h1 className="font-heading font-light text-2xl tracking-tight sm:text-3xl">
+      <h1 className="font-heading text-2xl tracking-tight sm:text-3xl">
         {children}
       </h1>
     ),
@@ -42,13 +42,25 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </blockquote>
     ),
-    code: ({ children }) => (
-      <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px]">
-        {children}
-      </code>
-    ),
-    pre: ({ children }) => (
-      <pre className="mt-4 overflow-x-auto rounded-lg bg-muted p-4 font-mono text-[13px] leading-relaxed">
+    code: ({ children }) => {
+      // Inline code only: fenced blocks render highlighted <span>s (not a plain
+      // string), so pass those through untouched to keep shiki's token colors.
+      if (typeof children !== "string") {
+        return <code>{children}</code>;
+      }
+      return (
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px]">
+          {children}
+        </code>
+      );
+    },
+    pre: ({ children, className, style }) => (
+      <pre
+        className={`mt-6 overflow-x-auto rounded-lg p-4 font-mono text-[13px] leading-relaxed${
+          className ? ` ${className}` : ""
+        }`}
+        style={style}
+      >
         {children}
       </pre>
     ),

@@ -25,7 +25,7 @@ export function DitherStudio() {
       </Link>
 
       <div className="mt-10 sm:mt-14">
-        <h1 className="font-heading font-light text-3xl tracking-tight sm:text-4xl">
+        <h1 className="font-heading text-3xl tracking-tight sm:text-4xl">
           Dither
         </h1>
         <p className="mt-3 text-muted-foreground text-sm leading-relaxed">

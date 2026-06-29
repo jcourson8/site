@@ -161,4 +161,26 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .font-heading {
+    font-weight: 300 !important;
+  }
+
+  /* Shiki code blocks: token colors come from per-mode CSS variables emitted
+     by the dual-theme setup (see mdx.config.mjs). The background is pinned to
+     the app's muted surface so it matches the rest of the UI instead of
+     shiki's themed bg. */
+  .shiki {
+    color: var(--shiki-light);
+    background-color: var(--card);
+  }
+
+  .shiki span {
+    color: var(--shiki-light);
+  }
+
+  .dark .shiki,
+  .dark .shiki span {
+    color: var(--shiki-dark);
+  }
 }

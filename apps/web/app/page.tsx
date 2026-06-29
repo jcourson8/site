@@ -74,7 +74,7 @@ export default function Page() {
   return (
     <div className="mx-auto max-w-xl px-6 pt-16 pb-12 sm:pt-24">
       <header className="space-y-4">
-        <h1 className="font-heading font-light text-2xl tracking-tight sm:text-3xl">
+        <h1 className="font-heading text-2xl tracking-tight sm:text-3xl">
           Currently building software that connects people and machines.
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
@@ -133,7 +133,11 @@ export default function Page() {
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Sport</h2>
         <div className="mt-3">
-          <TimelineRow name="Sub 5 Miler" start="TBD" />
+          <TimelineRow
+            href="https://strava.app.link/nJ1OnOZHP3b"
+            name="Sub 5 Miler"
+            start="2026"
+          />
           <TimelineRow end="2025" name="Pole Vault" start="2014" />
         </div>
       </section>
@@ -141,6 +145,11 @@ export default function Page() {
       <section className="mt-14">
         <h2 className="font-medium text-foreground text-sm">Dispatch</h2>
         <div className="mt-3">
+          {/* <TimelineRow
+            href="/dispatch/minimal-seam-owned-state"
+            name="A Minimal Seam for Owned State in Eve"
+            start="6/29/2026"
+          /> */}
           <TimelineRow
             href="/dispatch/lattice-chunking"
             name="Lattice Chunking"
@@ -154,15 +163,7 @@ export default function Page() {
         <div className="mt-4 flex gap-5 text-muted-foreground text-sm">
           <a
             className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
-            href="mailto:jcourson8@gmail.com"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Email
-          </a>
-          <a
-            className="underline decoration-1 decoration-muted-foreground/40 underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
-            href="https://github.com/jcourson8"
+            href="https://github.com/jcourson-bg"
             rel="noopener noreferrer"
             target="_blank"
           >

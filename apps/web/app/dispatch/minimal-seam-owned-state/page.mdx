@@ -1,0 +1,92 @@
+export const metadata = {
+  title: "A Minimal Seam for Owned State",
+  description:
+    "A small seam to own session state outside eve today — seed history in, mirror sink out — while the external store is still being figured out.",
+  draft: "true"
+};
+
+# A Minimal Seam for Owned State in Eve
+
+<p className="mt-1 font-mono text-[11px] text-muted-foreground">6/29/2026 - in progress</p>
+
+eve owns your session: history, continuation token, the durable snapshot.
+That's the point — until you want to own it yourself. Branch it, store it,
+replay it, hand it to something eve doesn't know about.
+
+The full answer is a pluggable external store where eve reads and writes your
+DB as source of truth. Right answer, still being weighed. It's also a real
+change — it crosses the runtime's step-boundary serialization, and routing +
+resume have to line up.
+
+This is the small thing in the meantime. Two seams, both optional. Seed
+history in, mirror sink out. eve keeps owning its state internally; you get a
+way to hand it a starting point and keep your own copy.
+
+## Seed history in
+
+Start a session from a transcript you supply:
+
+```ts
+const response = await client.session().send({
+  initialHistory: priorTurns,
+  message: "Pick up where we left off.",
+});
+```
+
+`initialHistory` is a `ModelMessage[]` — the shape eve uses. It seeds the
+session before the first turn. Start-only: once there's a continuation token
+it's ignored, so it can't rewrite a live session. Omit it and you get today's
+behavior.
+
+## Mirror sink out
+
+The other direction. After each turn, eve hands you that turn's full
+snapshot; you write it to your DB. Write-only — eve never reads it back, so
+the world stays source of truth and resume gets no new external dependency.
+
+```ts
+import { registerSessionSink, type SessionSink } from "eve";
+
+const sink: SessionSink = {
+  async write({ sessionId, turnIndex, snapshot }) {
+    await db.turns.upsert({
+      where: { sessionId_turnIndex: { sessionId, turnIndex } },
+      create: { sessionId, turnIndex, history: snapshot.history },
+      update: { history: snapshot.history },
+    });
+  },
+};
+
+registerSessionSink("app", sink);
+```
+
+One row per completed turn. Full-fidelity. Keyed by turn index.
+
+## Why the pair matters
+
+This is what dissolves compaction. eve's live history gets lossy-compacted —
+old turns summarized to fit the window. But the sink captures each turn at
+its own end, so your early rows stay full-fidelity even after eve later
+compacts them in the live session.
+
+So branching is just: read a row, re-seed a new session from it.
+
+```ts
+const row = await db.turns.find({ sessionId, turnIndex });
+
+const session = await client.session().send({
+  initialHistory: row.history,
+  message: "Try a more concise answer this time.",
+});
+```
+
+Branch, edit, regenerate all become "start a session from a prefix I choose."
+You own the prefix; eve runs the turn. The app holds the tree; eve stays a
+turn executor.
+
+## Why this and not just wait for the store
+
+The store asks eve to read state it didn't write, every turn. Real design,
+still being figured out. These seams touch none of that — eve keeps owning
+its state, you get a starting point and your own copy. When the store lands
+these work or get subsumed. Nothing here is throwaway.

@@ -15,16 +15,7 @@ const inter = Inter({
 });
 
 const gtCanon = localFont({
-  src: [
-    {
-      path: "../public/fonts/gt-canon/GT-Canon-Trial-VF.woff2",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/gt-canon/GT-Canon-Italic-Trial-VF.woff2",
-      style: "italic",
-    },
-  ],
+  src: "../public/fonts/gt-canon/GT-Canon-L-Standard-Light.woff2",
   variable: "--font-display",
   display: "swap",
 });
